@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Cake - Page 3</title>
+  <style>
+    body {
+      background: #ffe6f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .balloons-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .balloon {
+      width: 50px;
+      height: 70px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute;
+      bottom: -80px;
+      animation: fly 10s linear infinite;
+      opacity: 0.85;
+    }
+
+    .balloon:nth-child(1) { background: #ff6ec7; left: 10%; animation-delay: 0s; }
+    .balloon:nth-child(2) { background: #ffa07a; left: 25%; animation-delay: 2s; }
+    .balloon:nth-child(3) { background: #f08080; left: 50%; animation-delay: 4s; }
+    .balloon:nth-child(4) { background: #dda0dd; left: 70%; animation-delay: 1s; }
+    .balloon:nth-child(5) { background: #ffb6c1; left: 85%; animation-delay: 3s; }
+
+    @keyframes fly {
+      0% { transform: translateY(0); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    h1 {
+      position: relative;
+      z-index: 2;
+      color: #d63384;
+      font-size: 2.5rem;
+      margin-bottom: -10px;
+    }
+
+    .cake-container {
+      position: relative;
+      margin: 80px auto 0 auto;
+      width: 300px;
+      height: auto;
+      z-index: 2;
+    }
+
+    .cake-top-layer {
+      width: 180px;
+      height: 80px;
+      background: #ffc0cb;
+      border-radius: 0 0 30px 30px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+    }
+
+    .cake-top {
+      width: 180px;
+      height: 40px;
+      background: #ffbfd3;
+      border-radius: 30px 30px 0 0;
+      margin: 0 auto;
+      margin-top: -40px;
+      position: relative;
+      z-index: 2;
+      box-shadow: inset 0 4px 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .cake {
+      width: 300px;
+      height: 150px;
+      background: linear-gradient(135deg, #f3a6c1 0%, #e05e91 100%);
+      border-radius: 0 0 40px 40px;
+      box-shadow: 0 8px 15px rgba(224, 93, 145, 0.7);
+      position: relative;
+      margin: -10px auto 0 auto;
+      z-index: 0;
+    }
+
+    .candles {
+      position: absolute;
+      top: -30px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 3;
+    }
+
+    .candle {
+      width: 15px;
+      height: 60px;
+      background: #ff69b4;
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      filter: drop-shadow(0 0 6px #ff69b4);
+      transition: background-color 0.4s ease, filter 0.4s ease;
+    }
+
+    .candle::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 20px;
+      background: radial-gradient(circle at 50% 50%, #ffd700 40%, #ff8c00 90%);
+      border-radius: 50%;
+      box-shadow: 0 0 8px 3px #ffb700, 0 0 12px 6px #ff9900;
+      transition: opacity 0.4s ease;
+    }
+
+    .candle.off {
+      background: #aaa;
+      filter: none;
+    }
+
+    .candle.off::before {
+      opacity: 0;
+    }
+
+    .birthday-message {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.8rem;
+      color: #d63384;
+      font-weight: 700;
+      animation: fadeInMessage 1s ease forwards;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes fadeInMessage {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .thank-you-btn {
+      margin-top: 20px;
+      background-color: #ff6ec7;
+      border: none;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      border-radius: 15px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255,110,199,0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    .thank-you-btn:hover {
+      background-color: #e04dbb;
+    }
+
+    .nav-buttons {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-buttons button {
+      background-color: #ff6ec7;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255,110,199,0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-buttons button:hover {
+      background-color: #e04dbb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎈 Balloons -->
+  <div class="balloons-container">
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+    <div class="balloon"></div>
+  </div>
+
+  <h1>Happy Birthday!</h1>
+
+  <!-- 🎂 Cake -->
+  <div class="cake-container">
+    <div class="cake-top-layer"></div>
+    <div class="cake-top"></div>
+    <div class="candles">
+      <div class="candle" data-index="0"></div>
+      <div class="candle" data-index="1"></div>
+      <div class="candle" data-index="2"></div>
+      <div class="candle" data-index="3"></div>
+    </div>
+    <div class="cake"></div>
+  </div>
+
+  <div class="birthday-message" id="birthdayMessage">
+    🎉🎂 All candles are off! Happy Birthday! 🎂🎉<br />
+    <button class="thank-you-btn" onclick="thankYou()">Thank You</button>
+  </div>
+
+  <div class="nav-buttons">
+    <button onclick="goBack()">Back</button>
+    <button onclick="goNext()">Next</button>
+  </div>
+
+  <script>
+    const candles = document.querySelectorAll('.candle');
+    const birthdayMessage = document.getElementById('birthdayMessage');
+    const totalCandles = candles.length;
+    let offCount = 0;
+    const candleStates = Array(totalCandles).fill(false);
+
+    candles.forEach((candle, index) => {
+      candle.addEventListener('mouseenter', () => {
+        if (!candleStates[index]) {
+          candle.classList.add('off');
+          candleStates[index] = true;
+          offCount++;
+          checkAllOff();
+        }
+      });
+    });
+
+    function checkAllOff() {
+      if (offCount === totalCandles) {
+        birthdayMessage.style.display = 'block';
+      }
+    }
+
+    function thankYou() {
+      alert('Thank you for celebrating! 🎉');
+    }
+
+    function goBack() {
+      location.href = 'birdthday page2 .html';
+    }
+
+    function goNext() {
+      location.href = 'birthday page4.html';
+    }
+  </script>
+</body>
+</html>

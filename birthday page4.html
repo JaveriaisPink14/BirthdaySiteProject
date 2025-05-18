@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page 4 - Surprise Music with Balloons</title>
+  <style>
+    /* --- Balloon container behind everything --- */
+    body {
+      position: relative;
+      overflow-x: hidden;
+      background: #fff0f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      color: #d63384;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      z-index: 0;
+    }
+
+    #balloon-container {
+      pointer-events: none; /* clicks pass through */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: visible;
+      z-index: -1; /* behind content */
+    }
+
+    /* Balloon style */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 40px;
+      height: 60px;
+      background: radial-gradient(circle at 20% 30%, #ff4da6, #d63384);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0.85;
+      animation-name: floatUp;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    /* Balloon colors variety */
+    .balloon.red {
+      background: radial-gradient(circle at 20% 30%, #ff4d4d, #d60000);
+    }
+    .balloon.pink {
+      background: radial-gradient(circle at 20% 30%, #ff99cc, #d63384);
+    }
+    .balloon.purple {
+      background: radial-gradient(circle at 20% 30%, #b366ff, #6100b3);
+    }
+    .balloon.orange {
+      background: radial-gradient(circle at 20% 30%, #ff944d, #b35400);
+    }
+
+    /* Balloon string */
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: #a8005b;
+      transform: translateX(-50%);
+      border-radius: 1px;
+      opacity: 0.6;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    }
+
+    /* Float animation with straight up */
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.85;
+      }
+      50% {
+        transform: translateY(-55vh) scale(1.1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Pop (blast) animation */
+    @keyframes pop {
+      0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2.5) rotate(90deg);
+        opacity: 0;
+      }
+    }
+
+    /* Confetti (party popper pieces) style */
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 1;
+      transition: transform 1600ms ease-out, opacity 1600ms ease-out;
+      border-radius: 3px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .typing-box {
+      width: 80%;
+      max-width: 600px;
+      min-height: 150px;
+      border: 3px solid #d63384;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 1.6rem;
+      line-height: 1.5;
+      color: #a8005b;
+      background: #ffe6f0;
+      margin-bottom: 30px;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: pre-wrap;
+      box-shadow: 0 5px 15px rgba(214, 51, 132, 0.4);
+      user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      background-color: #ff6ec7;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      border-radius: 20px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 110, 199, 0.7);
+      transition: background-color 0.3s ease;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn:hover {
+      background-color: #e04dbb;
+    }
+
+    .music-box {
+      display: none;
+      width: 90%;
+      max-width: 600px;
+      background: #ffd6e8;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(214, 51, 132, 0.3);
+      text-align: left;
+      color: #8a0450;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 30px;
+    }
+
+    .song {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      gap: 15px;
+      user-select: none;
+      padding: 8px 12px;
+      border-radius: 12px;
+      transition: background-color 0.25s ease;
+    }
+
+    .song:hover {
+      background-color: #ffb6c1;
+    }
+
+    .play-icon {
+      width: 24px;
+      height: 24px;
+      fill: #d63384;
+      transition: fill 0.3s ease;
+    }
+
+    .song.playing .play-icon {
+      fill: #a8005b;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .back-btn-container {
+      margin-top: 40px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Balloon container -->
+  <div id="balloon-container"></div>
+
+  <h1>For my dear best friend</h1>
+
+  <div class="typing-box" id="typingBox"></div>
+
+  <button class="btn" id="surpriseBtn">Ready for surprise</button>
+
+  <div class="music-box" id="musicBox">
+    <h2>Choose a song to play 🎵</h2>
+    <div class="song" data-audio="song1.mp3">
+      <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      TUM mery ho Song
+    </div>
+    <div class="song" data-audio="song2.mp3">
+      <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Happy Moments Tune
+    </div>
+    <div class="song" data-audio="song3.mp3">
+      <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Celebrate With Me
+    </div>
+    <audio id="audioPlayer" controls style="width: 100%; margin-top: 15px; display:none;"></audio>
+  </div>
+
+  <div class="back-btn-container">
+    <button class="btn" onclick="goBack()">Back to first page</button>
+  </div>
+
+  <script>
+    const typingBox = document.getElementById('typingBox');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const musicBox = document.getElementById('musicBox');
+    const songs = document.querySelectorAll('.song');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const balloonContainer = document.getElementById('balloon-container');
+
+    const wishes = `Happy Birthday to you!
+Wishing you a day filled with love, laughter, and endless joy.
+May all your dreams come true today and always.
+You deserve the best on your special day and every day after! 🎉🎂🎈`;
+
+    // Typing effect for wishes
+    function typeWishes(text, i = 0) {
+      if (i < text.length) {
+        typingBox.textContent += text.charAt(i);
+        setTimeout(() => typeWishes(text, i + 1), 50);
+      }
+    }
+    typeWishes(wishes);
+
+    // Create balloons randomly rising
+    function createBalloon() {
+      const balloon = document.createElement('div');
+      balloon.classList.add('balloon');
+      // random color class
+      const colors = ['red', 'pink', 'purple', 'orange'];
+      balloon.classList.add(colors[Math.floor(Math.random() * colors.length)]);
+      // random horizontal position
+      balloon.style.left = `${Math.random() * 100}vw`;
+
+      // random animation duration
+      const duration = 8000 + Math.random() * 6000;
+      balloon.style.animationDuration = `${duration}ms`;
+
+      // animation delay
+      balloon.style.animationDelay = `0ms`;
+
+      balloonContainer.appendChild(balloon);
+
+      // Remove balloon when animation ends (popped or floats out)
+      balloon.addEventListener('animationend', () => balloon.remove());
+
+      // Click to pop balloon
+      balloon.addEventListener('click', () => {
+        popBalloon(balloon);
+      });
+    }
+
+    // Create multiple balloons initially and then every 400ms
+    for (let i = 0; i < 15; i++) {
+      setTimeout(createBalloon, i * 400);
+    }
+    setInterval(createBalloon, 400);
+
+    // Pop balloon animation and confetti blast
+    function popBalloon(balloon) {
+      balloon.style.animation = 'pop 700ms ease forwards';
+      createPartyPopper(
+        balloon.getBoundingClientRect().left + balloon.offsetWidth / 2,
+        balloon.getBoundingClientRect().top + balloon.offsetHeight / 2
+      );
+      setTimeout(() => balloon.remove(), 700);
+    }
+
+    // Pop all balloons with confetti and return a Promise for sequencing
+    function popAllBalloons() {
+      return new Promise((resolve) => {
+        const allBalloons = [...document.querySelectorAll('.balloon')];
+        if (allBalloons.length === 0) {
+          resolve();
+          return;
+        }
+        let poppedCount = 0;
+        allBalloons.forEach((balloon, idx) => {
+          setTimeout(() => {
+            popBalloon(balloon);
+            poppedCount++;
+            if (poppedCount === allBalloons.length) {
+              setTimeout(resolve, 700);
+            }
+          }, idx * 100);
+        });
+      });
+    }
+
+    // Confetti colors array
+    const confettiColors = ['#d63384', '#ff6ec7', '#a8005b', '#ff99cc', '#b366ff'];
+
+    // Confetti (party popper) creation - increased to 50 pieces for more intensity
+    function createPartyPopper(x, y) {
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+
+        const size = 5 + Math.random() * 7;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size * 0.4}px`;
+
+        const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        confetti.style.backgroundColor = color;
+
+        confetti.style.left = `${x}px`;
+        confetti.style.top = `${y}px`;
+
+        const angle = Math.random() * 2 * Math.PI;
+        const velocity = 40 + Math.random() * 60;
+        const dx = Math.cos(angle) * velocity;
+        const dy = Math.sin(angle) * velocity;
+
+        confetti.style.transform = 'translate(0,0) rotate(0deg)';
+        confetti.style.opacity = '1';
+
+        document.body.appendChild(confetti);
+
+        requestAnimationFrame(() => {
+          confetti.style.transition = 'transform 1600ms ease-out, opacity 1600ms ease-out';
+          confetti.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random() * 720}deg)`;
+          confetti.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 1600);
+      }
+    }
+
+    // Surprise button click handler
+    surpriseBtn.addEventListener('click', () => {
+      popAllBalloons().then(() => {
+        musicBox.style.display = 'block';
+        surpriseBtn.style.display = 'none';
+        audioPlayer.style.display = 'block';
+
+        // Update heading text inside music box
+        const musicHeading = musicBox.querySelector('h2');
+        musicHeading.textContent = "The song we listen together";
+
+        // Start repeated confetti blasts inside music box area
+        const rect = musicBox.getBoundingClientRect();
+        let blastCount = 0;
+        const maxBlasts = 10;
+
+        const blastInterval = setInterval(() => {
+          const x = rect.left + Math.random() * rect.width;
+          const y = rect.top + Math.random() * rect.height;
+          createPartyPopper(x, y);
+          blastCount++;
+          if (blastCount >= maxBlasts) clearInterval(blastInterval);
+        }, 400);
+      });
+    });
+
+    // Audio player control for songs
+    let currentAudio = null;
+    songs.forEach(song => {
+      song.addEventListener('click', () => {
+        const audioSrc = song.getAttribute('data-audio');
+        if (!audioSrc) return;
+
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
+
+        songs.forEach(s => s.classList.remove('playing'));
+        song.classList.add('playing');
+
+        audioPlayer.src = audioSrc;
+        audioPlayer.play();
+        currentAudio = audioPlayer;
+      });
+    });
+
+    // Back button functionality
+     function goBack() {
+      window.location.href = 'birthday.html';  // Change this to your actual first page filename if different
+    }
+  </script>
+
+</body>
+</html>
